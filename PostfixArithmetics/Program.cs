@@ -20,13 +20,15 @@ namespace PostfixArithmetics {
             string userInput = Console.ReadLine();
 
             //generate postfix output
-            string postfixOutput = InfixToPostfixConverter.convertInfixToPostfix(userInput);
+            string postfixOutput = PostfixEvaluator.convertInfixToPostfix(userInput);
+            Console.WriteLine("\nUser Input (Infix) = " + userInput + "\nPostfix Output = " + postfixOutput);
 
-            Console.WriteLine("\nParsing Finished\nUser Input (Infix) = " + userInput + "\nPostfix Output = " + postfixOutput);
+            Console.WriteLine("\nCalculating Postfix Expression...");
+            string postfixResult = PostfixEvaluator.evaluatePostfixExpression(postfixOutput);
+            Console.WriteLine(postfixOutput + " = " + postfixResult);
+
             Console.WriteLine("\nPress any key to terminate...");
             Console.ReadKey();
         }
-
-
     }
 }

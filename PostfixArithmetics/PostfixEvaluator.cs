@@ -7,11 +7,59 @@ using GenericStackLibrary;
 using System.Text.RegularExpressions;
 
 namespace PostfixArithmetics {
-
     /// <summary>
-    /// Static class for converting arithmetic expressions from infix to postix
+    /// PostfixEvaluator provides functionality for postfix expression conversion and evaluation
     /// </summary>
-    static class InfixToPostfixConverter {
+    static class PostfixEvaluator {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="postfix"></param>
+        public static string evaluatePostfixExpression(string postfix) {
+            char[] postfixChars = postfix.ToCharArray();
+            string[] tokens = postfix.Split();
+            //LinkedList<string> tokens = parseArithmeticExpression(postfixChars);
+            GenericStack<string> parsingStack = new GenericStack<string>();
+
+            //1. Scan the Postfix string from left to right.
+            for (int i = 0; i < tokens.Length - 1; i++) {
+                //2. If the scannned character is an operand, add it to the stack.
+                if (isOperand(tokens[i])) {
+                    parsingStack.push(tokens[i]);
+                }
+                else {
+                    //3. If the scanned character is an Operator, then we store the top most element of the stack(topStack) in a variable temp.
+                    //   Pop the stack. Now evaluate topStack(Operator)temp. Let the result of this operation be retVal.
+                    //   Pop the stack and Push retVal into the stack.
+                    double operand1 = Double.Parse(parsingStack.pop());
+                    double operand2 = Double.Parse(parsingStack.pop());
+                    string result = "";
+                    switch (tokens[i]) {
+                        case "*":
+                        result = (operand2 * operand1) + "";
+                        break;
+                        case "/":
+                        result = (operand2 / operand1) + "";
+                        break;
+                        case "+":
+                        result = (operand2 + operand1) + "";
+                        break;
+                        case "-":
+                        result = (operand2 - operand1) + "";
+                        break;
+                        default:
+                        Console.WriteLine("Error during Postfix Evaluation, unrecognized operator: " + tokens[i]);
+                        result = "";
+                        break;
+                    }
+                    parsingStack.push(result);
+                }
+            }
+            //5. After all characters are scanned, we will have only one element in the stack.Return topStack.
+            return parsingStack.pop();
+        }
+
 
         /// <summary>
         /// Static method that converts arithmetic expression from infix to postfix
@@ -98,15 +146,30 @@ namespace PostfixArithmetics {
 
 
         /// <summary>
-    /// Returns true if string equals multiplication or division operator
-    /// </summary>
-    /// <param name="s"></param>
-    /// <returns>True if string s is multiplication or division</returns>
+        /// Returns true if string equals multiplication or division operator
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns>True if string s is multiplication or division</returns>
         private static Boolean isHighPrecedence(string s) {
             if (s.Equals("*") || s.Equals("/")) {
                 return true;
             }
             return false;
+        }
+
+
+        /// <summary>
+        /// Returns true if string value is an operand
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        private static Boolean isOperand(string s) {
+            if(Regex.IsMatch(s, @"[\+\*\/-]{1}")) {
+                Console.WriteLine(s + " Is Operator");
+                return false;
+            }
+            Console.WriteLine(s + " Is Operand");
+            return true;
         }
 
 
@@ -157,5 +220,4 @@ namespace PostfixArithmetics {
             return tokens;
         }
     }
-
 }
